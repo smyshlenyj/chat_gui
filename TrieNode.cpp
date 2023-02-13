@@ -7,7 +7,7 @@ TrieNode* getNewNode()
 	pNode->isEndOfWord = false;
 	pNode->freq = 1;
 
-	for (int i = 0; i < ALPHABET_SIZE; i++) pNode->children[i] = nullptr;
+	for (size_t i = 0; i < ALPHABET_SIZE; i++) pNode->children[i] = nullptr;
 
 	return pNode;
 }
@@ -16,7 +16,7 @@ void insert(TrieNode* root, const std::string& key)
 {
 	TrieNode* node = root;
 
-	for (int i = 0; i < key.length(); i++)
+	for (size_t i = 0; i < key.length(); i++)
 	{
 		int index = key[i] - 'a';
 
@@ -38,8 +38,8 @@ void autocomplete(TrieNode* root, std::string currPrefix, const std::string& key
 		return;
 	}
 
-	for (int i = 0; i < ALPHABET_SIZE; i++)
-		if (root->children[i]) 
+	for (size_t i = 0; i < ALPHABET_SIZE; i++)
+		if (root->children[i])
 		{
 			char child = 'a' + i;
 			autocomplete(root->children[i], currPrefix + child, keyword, inputMessage);
@@ -65,7 +65,6 @@ void printAutoSuggestions(TrieNode* root, const std::string& keyword, std::strin
 
 TrieNode::~TrieNode()
 {
-	for (int i = 0; i < ALPHABET_SIZE; ++i)
+	for (size_t i = 0; i < ALPHABET_SIZE; ++i)
 		delete children[i];
 }
-		

@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "Users.h"
 
+
 static void glfw_error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -114,49 +115,15 @@ int UI(int, char**)
 	GLuint avatarImageTexture = 0;
 
 	bool ret = false;
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	ret = LoadTextureFromFile("avatar.jpg", &avatarImageTexture, &avatarImageWidth, &avatarImageHeight);
 	IM_ASSERT(ret);
-#endif
-
-#ifdef __linux__
-	std::filesystem::path stackPath{ home + "/.stackmessenger" };
-	if (std::filesystem::exists(stackPath))
-	{
-		std::string pathToAvatar = home + "/.stackmessenger/avatar.jpg";
-		ret = LoadTextureFromFile(pathToAvatar.c_str(), &avatarImageTexture, &avatarImageWidth, &avatarImageHeight);
-		IM_ASSERT(ret);
-	}
-	else
-	{
-		ret = LoadTextureFromFile("avatar.jpg", &avatarImageTexture, &avatarImageWidth, &avatarImageHeight);
-		IM_ASSERT(ret);
-	}
-#endif
-
 
 	int backgroundImageWidth = 1280;
 	int backgroundImageHeight = 720;
 	GLuint backgroundTexture = 0;
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	ret = LoadTextureFromFile("background.jpg", &backgroundTexture, &backgroundImageWidth, &backgroundImageHeight);
 	IM_ASSERT(ret);
-#endif
-
-#ifdef __linux__
-	if (std::filesystem::exists(stackPath))
-	{
-		std::string pathToBackground = home + "/.stackmessenger/background.jpg";
-		ret = LoadTextureFromFile(pathToBackground.c_str(), &backgroundTexture, &backgroundImageWidth, &backgroundImageHeight);
-		IM_ASSERT(ret);
-	}
-	else
-	{
-		ret = LoadTextureFromFile("background.jpg", &backgroundTexture, &backgroundImageWidth, &backgroundImageHeight);
-		IM_ASSERT(ret);
-	}
-#endif
 
 	const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 
@@ -193,7 +160,6 @@ int UI(int, char**)
 			ImGui::Image((void*)(intptr_t)backgroundTexture, ImVec2(backgroundImageWidth, backgroundImageHeight));
 			ImGui::End();
 		}
-
 
 		if (showMainMenuWindow)
 		{
@@ -249,7 +215,9 @@ int UI(int, char**)
 
 			if (ImGui::Button("Exit"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 				programAlive = false;
-			//	ImGui::Checkbox("Demo Window", &show_demo_window);      
+			//	ImGui::Checkbox("Demo Window", &show_demo_window); 
+			ImGui::Text("OS Version: ");
+			//ImGui::Text(getOSVersion().c_str());
 
 			ImGui::End();
 		}

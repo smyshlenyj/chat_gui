@@ -1,13 +1,8 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include "UI.h"
+#include <string>
 #include <windows.h>
 #include <stdio.h>
 #include <VersionHelpers.h>
 #include <Winver.h>
-#include <iostream>
 #pragma comment(lib,"Version.lib")
 
-int main(int a, char** b)
-{
-	return UI(a, b);
-}
+std::string getOSVersion();

@@ -8,43 +8,9 @@ Users::Users()
 {
 	std::ifstream readFromDB;
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	readFromDB.open("users.mdf", std::ios::in);
-	if (!readFromDB.is_open())
+	if (!std::filesystem::exists("users.mdf"))
 		std::ofstream outfile("users.mdf"); //create file in case it's not there
-	else
-	{
-		while (!readFromDB.eof())
-		{
-			std::string userRecord;
-
-			std::getline(readFromDB, userRecord);
-			if (!userRecord.empty())
-			{
-				std::istringstream ss(userRecord);
-				std::string token;
-				int i = 0; // iterator for while
-				std::string array[3];
-				while (std::getline(ss, token, '\t'))
-				{
-					array[i] = token;
-					++i;
-				}
-				User tempUser = { array[0], array[1], array[2] };
-				users.push_back(tempUser);
-			}
-		}
-	}
-#endif
-
-#ifdef __linux__
-	std::string home = getenv("HOME");
-	std::filesystem::path usersPath{ home + "/.stackmessenger/users.mdf" };
-
-	if (!std::filesystem::exists(usersPath))
-		std::ofstream outfile(usersPath); //create file in case it's not there
-
-	readFromDB.open(usersPath, std::ios::in);
 
 	while (!readFromDB.eof())
 	{
@@ -66,7 +32,6 @@ Users::Users()
 			users.push_back(tempUser);
 		}
 	}
-#endif
 }
 
 bool Users::uniqueLogin(std::string const& login) // check login for uniqueness
@@ -119,17 +84,7 @@ std::string Users::findUserNameByLogin(std::string const& login)
 
 void Users::addUser(User const& user)
 {
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	std::ofstream out("users.mdf", std::ios::app); // add user record to data base
 	if (out.is_open())
 		out << user.getLogin() + "\t" + user.getPassword() + "\t" + user.getUserName() << std::endl;  //add new user to file
-#endif
-
-#ifdef __linux__
-	std::string home = getenv("HOME");
-	std::filesystem::path usersPath{ home + "/.stackmessenger/users.mdf" };
-	std::ofstream out(usersPath, std::ios::app); // add user record to data base
-	if (out.is_open())
-		out << user.getLogin() + "\t" + user.getPassword() + "\t" + user.getUserName() << std::endl;  //add new user to file
-#endif
 }
